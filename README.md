@@ -10,9 +10,11 @@ The script will:
 
 That's it!
 
-It will keep a record of all PRs that have already been looked at and ignore these on next run.
+It will keep a record of all PRs that are being looked at or have already been looked at,
+and ignore these on next run.
 
-To make it run contiuously, use something like `crontab`
+To make it run continuously, use something like `crontab`, or maybe just `tmux` with a `while sleep` loop? 
+That's CI for ya right there :-)
 
 ## How do I use it?
 
@@ -23,7 +25,7 @@ $ ./pr-builder.sh <github-user> <personal access token> <repo>
 Example:
 
 ```
-$ ./pr-builder.sj grav abc123beefbeefbeef grav/my-repo
+$ ./pr-builder.sh grav abc123beefbeefbeef grav/my-repo
 ```
 
 Make sure the PR-branch contains a `test.sh` script in the root.
