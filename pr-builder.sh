@@ -16,7 +16,7 @@ if [ ! -d $workspace ]; then
 fi
 
 
-( cd $workspace && git fetch origin refs/pull/*/head:refs/remotes/origin/pr/* ) 
+( cd $workspace && git fetch origin --force -q refs/pull/*/head:refs/remotes/origin/pr/* ) 
 
 shas=`curl -s -u $gh_user:$gh_key "https://api.github.com/repos/${gh_repo}/pulls?state=open" | jq -r 'map(.head.sha) | .[]'`
 
