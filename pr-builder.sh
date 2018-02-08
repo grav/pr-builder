@@ -9,7 +9,6 @@ workspace=workspace
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 touch commits.txt
-mkdir -p db
 
 if [ ! -d $workspace ]; then
     git clone --depth 1 git@github.com:$3 workspace
