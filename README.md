@@ -33,3 +33,6 @@ Make sure the PR-branch contains a `test.sh` script in the root.
 To generate a personal access token, visit this page:
 https://github.com/settings/tokens
 
+## TODO
+- log all communication with GitHub API
+- remove dependency on `jq`
