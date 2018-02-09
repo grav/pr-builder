@@ -5,6 +5,7 @@ set -e
 gh_user=$1
 gh_key=$2
 gh_repo=$3
+log_base_url=${4}
 workspace=workspace
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -23,9 +24,8 @@ function post_status(){
     local sha=$1
     local state=$2
     local desc=$3
-    local url=${4-"http://dr.dk"}
     curl -s -u $gh_user:$gh_key -X POST https://api.github.com/repos/${gh_repo}/statuses/${sha} \
-    -d "{\"state\":\"${state}\", \"target_url\":\"http://dr.dk\", \"description\": \"${desc}\", \"context\":\"CI\"}" \
+    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/${sha}.txt\", \"description\": \"${desc}\", \"context\":\"CI\"}" \
     > /dev/null
 }
 
