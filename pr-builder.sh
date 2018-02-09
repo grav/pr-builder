@@ -8,12 +8,12 @@ gh_repo=$3
 workspace=workspace
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-touch commits.txt
+mkdir -p db
+touch db/commits.txt
 
 if [ ! -d $workspace ]; then
     git clone --depth 1 git@github.com:$3 workspace
 fi
-
 
 ( cd $workspace && git fetch origin --force -q refs/pull/*/head:refs/remotes/origin/pr/* ) 
 
@@ -30,11 +30,11 @@ function post_status(){
 }
 
 while read -r sha; do
-    if ! grep $sha commits.txt > /dev/null; then
-        echo $sha >> commits.txt
+    if ! grep $sha db/commits.txt > /dev/null; then
+        echo $sha >> db/commits.txt
         post_status $sha "pending" "Pending"
         echo "Testing ${sha} ..."   
-        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh 10 > "${script_dir}/${sha}.out" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh 10 > "${script_dir}/db/${sha}.txt" ) ); then 
             echo "Failure"
             post_status $sha "failure" "Failure"
         else
