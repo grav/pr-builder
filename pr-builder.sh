@@ -7,10 +7,11 @@ gh_key=$2
 gh_repo=$3
 log_base_url=${4}
 workspace=workspace
+db=db
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-mkdir -p db
-touch db/commits.txt
+mkdir -p $db
+touch $db/commits.txt
 
 if [ ! -d $workspace ]; then
     git clone --depth 1 git@github.com:$3 workspace
@@ -30,11 +31,11 @@ function post_status(){
 }
 
 while read -r sha; do
-    if ! grep $sha db/commits.txt > /dev/null; then
-        echo $sha >> db/commits.txt
+    if ! grep $sha $db/commits.txt > /dev/null; then
+        echo $sha >> $db/commits.txt
         post_status $sha "pending" "Pending"
         echo "Testing ${sha} ..."   
-        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh > "${script_dir}/db/${sha}.txt" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh > "${script_dir}/${db}/${sha}.txt" ) ); then 
             echo "Failure"
             post_status $sha "failure" "Failure"
         else
