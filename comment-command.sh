@@ -51,7 +51,7 @@ while read -r line; do
         log_file="${command}_${sha}_${arg}.txt"
         echo $comment_id >> $db/comments.txt
         echo "$command $sha $arg"
-        if ( ! ( cd $workspace && git checkout -q $sha && $run_cmd $sha $arg > "${script_dir}/${log_file}" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && $run_cmd $sha $arg > "${script_dir}/${db}/${log_file}" ) ); then 
             echo "Failure"
             post_status $sha "failure" "Failure"
         else
