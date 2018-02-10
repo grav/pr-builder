@@ -42,7 +42,7 @@ fi
 
 ( cd $workspace && git fetch origin --force -q refs/pull/*/head:refs/remotes/origin/pr/* ) 
 
-commands=`get_comments_for_prs | extract_commands "$command"`
+commands=`get_comments_for_prs | extract_commands "$command" | grep .`
 
 while read -r line; do
     IFS=\| read sha comment_id text <<< "$line"
@@ -50,6 +50,7 @@ while read -r line; do
         arg=`echo "$text" | cut -d\  -f2`
         log_file="${command}_${sha}_${arg}.txt"
         echo $comment_id >> $db/comments.txt
+        echo "$command $sha $arg"
         if ( ! ( cd $workspace && git checkout -q $sha && $run_cmd $sha $arg > "${script_dir}/${log_file}" ) ); then 
             echo "Failure"
             post_status $sha "failure" "Failure"
@@ -57,6 +58,5 @@ while read -r line; do
             echo "Success"
             post_status $sha "success" "Success"
         fi
-
     fi
 done <<< "$commands"
