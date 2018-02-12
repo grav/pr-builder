@@ -35,7 +35,7 @@ while read -r sha; do
         echo $sha >> $db/commits.txt
         post_status $sha "pending" "Pending"
         echo "Testing ${sha} ..."   
-        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh > "${script_dir}/${db}/${sha}.txt" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh &> "${script_dir}/${db}/${sha}.txt" ) ); then 
             echo "Failure"
             post_status $sha "failure" "Failure"
         else
