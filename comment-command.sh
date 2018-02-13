@@ -29,11 +29,12 @@ function get_comments_for_prs(){
 
 function post_status(){
     local sha=$1
-    local logfile=$2
-    local state=$3
-    local desc=$4
+    local arg=$2
+    local logfile=$3
+    local state=$4
+    local desc=$5
     curl -s -u $gh_user:$gh_key -X POST https://api.github.com/repos/${gh_repo}/statuses/${sha} \
-    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/${logfile}\", \"description\": \"${desc}\", \"context\":\"${command}\"}" \
+    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/${logfile}\", \"description\": \"${desc}\", \"context\":\"${command} ${arg}\"}" \
     > /dev/null
 }
 
@@ -51,14 +52,18 @@ while read -r line; do
         arg=`echo "$text" | cut -d\  -f2`
         log_file="${command}_${sha}_${arg}.txt"
         echo $comment_id >> $db/comments.txt
-        post_status $sha $log_file "pending" "Pending"
+        post_status $sha $arg $log_file "pending" "Pending"
         echo "$command $sha $arg"
+        start_t=$(date +%s)
         if ( ! ( cd $workspace && git checkout -q $sha && $run_cmd $sha $arg &> "${script_dir}/${db}/${log_file}" ) ); then 
             echo "Failure"
-            post_status $sha $log_file "failure" "Failure"
+            post_status $sha $arg $log_file "failure" "Failure"
         else
             echo "Success"
-            post_status $sha $log_file "success" "Success"
+            end_t=$(date +%s)
+            post_status $sha $arg $log_file "success" "`expr $end_t - $start_t` seconds"
         fi
+    else
+        echo "Skipping $sha: '$text'"
     fi
 done <<< "$commands"
