@@ -35,12 +35,15 @@ while read -r sha; do
         echo $sha >> $db/commits.txt
         post_status $sha "pending" "Pending"
         echo "Testing ${sha} ..."   
+        start_t=$(date +%s)
         if ( ! ( cd $workspace && git checkout -q $sha && ./test.sh &> "${script_dir}/${db}/${sha}.txt" ) ); then 
             echo "Failure"
-            post_status $sha "failure" "Failure"
+            end_t=$(date +%s)
+            post_status $sha "failure" "`expr $end_t - $start_t` seconds"
         else
             echo "Success"
-            post_status $sha "success" "Success"
+            end_t=$(date +%s)
+            post_status $sha "success" "`expr $end_t - $start_t` seconds"
         fi
     else
         echo "Skipping ${sha}"
