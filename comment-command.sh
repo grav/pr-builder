@@ -5,10 +5,10 @@ set -e
 gh_user=$1
 gh_key=$2
 gh_repo=$3 # eg grav/my-repo
-command=$4 # what to look for in comments, eg `compare_to`
-run_cmd=$5 # what to run in repo, eg `./compare.sh`
-log_base_url=${6} # where to post status
-workspace=workspace
+workspace=$4
+command=$5 # what to look for in comments, eg `compare_to`
+run_cmd=$6 # what to run in repo, eg `./compare.sh`
+log_base_url=${7} # where to post status
 db=db
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -39,7 +39,7 @@ function post_status(){
 }
 
 if [ ! -d $workspace ]; then
-    git clone --depth 1 git@github.com:$3 workspace
+    git clone --depth 1 git@github.com:$3 $workspace
 fi
 
 ( cd $workspace && git fetch origin --force -q refs/pull/*/head:refs/remotes/origin/pr/* ) 
@@ -48,8 +48,8 @@ commands=`get_comments_for_prs | extract_commands "$command" | grep .`
 
 while read -r line; do
     IFS=\| read sha comment_id text <<< "$line"
+    arg=`echo "$text" | cut -d\  -f2`
     if ! grep $comment_id $db/comments.txt > /dev/null; then
-        arg=`echo "$text" | cut -d\  -f2`
         log_file="${command}_${sha}_${arg}.txt"
         echo $comment_id >> $db/comments.txt
         post_status $sha $arg $log_file "pending" "Pending"
@@ -57,13 +57,14 @@ while read -r line; do
         start_t=$(date +%s)
         if ( ! ( cd $workspace && git checkout -q $sha && $run_cmd $sha $arg &> "${script_dir}/${db}/${log_file}" ) ); then 
             echo "Failure"
-            post_status $sha $arg $log_file "failure" "Failure"
+            end_t=$(date +%s)
+            post_status $sha $arg $log_file "failure" "`expr $end_t - $start_t` seconds"
         else
             echo "Success"
             end_t=$(date +%s)
             post_status $sha $arg $log_file "success" "`expr $end_t - $start_t` seconds"
         fi
     else
-        echo "Skipping $sha: '$text'"
+        echo "Skipping '$command $sha $arg'"
     fi
 done <<< "$commands"
