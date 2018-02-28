@@ -20,6 +20,8 @@ That's CI for ya right there :-)
 
 First install `jq` with `brew`, `apt-get` etc.
 
+The syntax for running the script is:
+
 ```
 $ ./pr-builder.sh <github-user> <personal access token> <repo>
 ```
