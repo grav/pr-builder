@@ -18,6 +18,8 @@ That's CI for ya right there :-)
 
 ## How do I use it?
 
+First install `jq` with `brew`, `apt-get` etc.
+
 ```
 $ ./pr-builder.sh <github-user> <personal access token> <repo>
 ```
@@ -35,5 +37,4 @@ https://github.com/settings/tokens
 
 ## TODO
 - log all communication with GitHub API
-- remove dependency on `jq`
 - handle `fatal: reference is not a tree: <sha>` - seems to come up if PR has arrived to GitHub before commit
