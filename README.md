@@ -36,3 +36,4 @@ https://github.com/settings/tokens
 ## TODO
 - log all communication with GitHub API
 - remove dependency on `jq`
+- handle `fatal: reference is not a tree: <sha>` - seems to come up if PR has arrived to GitHub before commit
