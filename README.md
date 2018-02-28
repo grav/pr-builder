@@ -39,4 +39,6 @@ https://github.com/settings/tokens
 
 ## TODO
 - log all communication with GitHub API
+- allow setting workdir from cmdline 
+- describe `comment-command.sh`
 - handle `fatal: reference is not a tree: <sha>` - seems to come up if PR has arrived to GitHub before commit
