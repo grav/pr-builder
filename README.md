@@ -23,16 +23,19 @@ First install `jq` with `brew`, `apt-get` etc.
 The syntax for running the script is:
 
 ```
-$ ./pr-builder.sh <github-user> <personal access token> <repo>
+$ ./pr-builder.sh <github-user> <personal access token> <repo> <log-base-url> <workspace> <test-script>
+
 ```
+
+`<workspace>` defaults to `workspace`, `<test-script>` defaults to `./test.sh`
 
 Example:
 
 ```
-$ ./pr-builder.sh grav abc123beefbeefbeef grav/my-repo
+$ ./pr-builder.sh grav abc123beefbeefbeef grav/my-repo http://example.com/logs ws ./test.sh
 ```
 
-Make sure the PR-branch contains a `test.sh` script in the root.
+Make sure the PR-branch contains a `test.sh` script in the root (or whatever you've defined).
 
 To generate a personal access token, visit this page:
 https://github.com/settings/tokens
