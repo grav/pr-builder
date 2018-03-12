@@ -36,6 +36,7 @@ function post_status(){
 }
 
 while read -r sha; do
+    [[ -z $sha ]] && break
     if ! grep $sha $db/$commits > /dev/null; then
         echo $sha >> $db/$commits
         log_file="${sha}_${base}.txt"
