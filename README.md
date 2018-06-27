@@ -44,3 +44,4 @@ https://github.com/settings/tokens
 - log all communication with GitHub API
 - describe `comment-command.sh`
 - handle `fatal: reference is not a tree: <sha>` - seems to come up if PR has arrived to GitHub before commit
+- specify license
