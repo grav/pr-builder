@@ -8,8 +8,6 @@ gh_user=$1
 gh_key=$2
 gh_repo=$3
 base=$4
-workspace="workspace_$base"
-commits="commits_$base.txt"
 log_base_url=${5}
 run_command=${6-"./test.sh"}
 db=db
@@ -18,11 +16,16 @@ if [ -n $LATEST_COMMIT ]; then
     jq=".sha"
     api="repos/${gh_repo}/commits/${base}"
     git_fetch="${base}"
+    ci="${base}_latest"
 else    
     jq="map(.head.sha) | .[]"
     api="repos/${gh_repo}/pulls?state=open&base=${base}"
     git_fetch="refs/pull/*/head:refs/remotes/origin/pr/*"
+    ci="${base}"
 fi
+
+workspace="workspace_$ci"
+commits="commits_$ci.txt"
 
 mkdir -p $db
 touch $db/$commits
@@ -41,7 +44,7 @@ function post_status(){
     local state=$3
     local desc=$4
     curl -s -u $gh_user:$gh_key -X POST https://api.github.com/repos/${gh_repo}/statuses/${sha} \
-    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/$log_file\", \"description\": \"${desc}\", \"context\":\"CI ${base}\"}" \
+    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/$log_file\", \"description\": \"${desc}\", \"context\":\"CI ${ci}\"}" \
     > /dev/null
 }
 
@@ -49,7 +52,7 @@ while read -r sha; do
     [[ -z $sha ]] && break
     if ! grep $sha $db/$commits > /dev/null; then
         echo $sha >> $db/$commits
-        log_file="${sha}_${base}.txt"
+        log_file="${sha}_${ci}.txt"
         post_status $sha $log_file "pending" "Pending $(date)"
         echo "Processing ${sha} ..."   
         start_t=$(date +%s)
