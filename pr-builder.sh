@@ -12,16 +12,16 @@ log_base_url=${5}
 run_command=${6-"./test.sh"}
 db=db
 
-if [ -n $LATEST_COMMIT ]; then 
-    jq=".sha"
-    api="repos/${gh_repo}/commits/${base}"
-    git_fetch="${base}"
-    ci="${base}_latest"
-else    
+if [ -z $LATEST_COMMIT ]; then 
     jq="map(.head.sha) | .[]"
     api="repos/${gh_repo}/pulls?state=open&base=${base}"
     git_fetch="refs/pull/*/head:refs/remotes/origin/pr/*"
     ci="${base}"
+else
+    jq=".sha"
+    api="repos/${gh_repo}/commits/${base}"
+    git_fetch="${base}"
+    ci="${base}_latest"
 fi
 
 workspace="workspace_$ci"
