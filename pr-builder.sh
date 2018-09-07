@@ -55,6 +55,7 @@ while read -r sha; do
         log_file="${sha}_${ci}.txt"
         post_status $sha $log_file "pending" "Pending $(date)"
         echo "Processing ${sha} ..."   
+        sleep 2 # code isnt' always immediately availabel, even if the gh api says it is
         start_t=$(date +%s)
         if ( ! ( cd $workspace && git checkout -q $sha && $run_command &> "${script_dir}/${db}/$log_file" ) ); then 
             echo "Failure"
