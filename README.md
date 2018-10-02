@@ -23,14 +23,14 @@ First install `jq` with `brew`, `apt-get` etc.
 The syntax for running the script is:
 
 ```
-$ ./pr-builder.sh <github-user> <personal access token> <repo> <base-branch> <log-base-url> <test-script>
+$ ./pr-builder.sh <github-user> <personal access token> <repo> <base-branch> <log-base-url> <context> <test-script>
 
 ```
 
 Example:
 
 ```
-$ ./pr-builder.sh grav abc123beefbeefbeef grav/my-repo master http://example.com/logs ./test.sh
+$ ./pr-builder.sh grav abc123beefbeefbeef grav/my-repo master http://example.com/logs my-ci ./test.sh
 ```
 
 This will test any open PR that is destined for the `master` branch.
