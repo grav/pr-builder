@@ -57,7 +57,7 @@ while read -r sha; do
         echo "Processing ${sha} ..."   
         sleep 2 # code isnt' always immediately availabel, even if the gh api says it is
         start_t=$(date +%s)
-        if ( ! ( cd $workspace && git checkout -q $sha && $run_command &> "${script_dir}/${db}/$log_file" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && PR_BUILDER_BASE=$base $run_command &> "${script_dir}/${db}/$log_file" ) ); then 
             echo "Failure"
             end_t=$(date +%s)
             post_status $sha $log_file "failure" "`expr $end_t - $start_t` seconds"
