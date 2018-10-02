@@ -9,7 +9,8 @@ gh_key=$2
 gh_repo=$3
 base=$4
 log_base_url=${5}
-run_command=${6-"./test.sh"}
+context=${6}
+run_command=${7-"./test.sh"}
 db=db
 
 if [ -z $LATEST_COMMIT ]; then 
@@ -44,7 +45,7 @@ function post_status(){
     local state=$3
     local desc=$4
     curl -s -u $gh_user:$gh_key -X POST https://api.github.com/repos/${gh_repo}/statuses/${sha} \
-    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/$log_file\", \"description\": \"${desc}\", \"context\":\"CI ${ci}\"}" \
+    -d "{\"state\":\"${state}\", \"target_url\":\"${log_base_url}/$log_file\", \"description\": \"${desc}\", \"context\":\"${context} ${ci}\"}" \
     > /dev/null
 }
 
