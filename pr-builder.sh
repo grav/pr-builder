@@ -52,13 +52,12 @@ function post_status(){
 while read -r sha; do
     [[ -z $sha ]] && break
     if ! grep $sha $db/$commits > /dev/null; then
-        echo $sha >> $db/$commits
         log_file="${sha}_${ci}.txt"
         post_status $sha $log_file "pending" "Pending $(date)"
         echo "Processing ${sha} ..."   
         sleep 2 # code isnt' always immediately availabel, even if the gh api says it is
         start_t=$(date +%s)
-        if ( ! ( cd $workspace && git checkout -q $sha && PR_BUILDER_BASE=$base $run_command &> "${script_dir}/${db}/$log_file" ) ); then 
+        if ( ! ( cd $workspace && git checkout -q $sha && echo $sha >> "${script_dir}/$db/$commits" && PR_BUILDER_BASE=$base $run_command &> "${script_dir}/${db}/$log_file" ) ); then 
             echo "Failure"
             end_t=$(date +%s)
             post_status $sha $log_file "failure" "`expr $end_t - $start_t` seconds"
