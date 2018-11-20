@@ -2,18 +2,23 @@
 
 set -e
 
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 gh_user=$1
 gh_key=$2
 gh_repo=$3 # eg grav/my-repo
-workspace=$4
+base=$4
 command=$5 # what to look for in comments, eg `compare_to`
 run_cmd=$6 # what to run in repo, eg `./compare.sh`
 log_base_url=${7} # where to post status
 db=db
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+ci="${base}_$command"
+comments="comments_$ci.txt"
+workspace="workspace_$ci"
 
 mkdir -p $db
-touch $db/comments.txt
+touch $db/$comments
 
 function extract_commands(){
     local command=$1
@@ -49,9 +54,9 @@ commands=`get_comments_for_prs | extract_commands "$command" | grep .`
 while read -r line; do
     IFS=\| read sha comment_id text <<< "$line"
     arg=`echo "$text" | cut -d\  -f2`
-    if ! grep $comment_id $db/comments.txt > /dev/null; then
+    if ! grep $comment_id $db/$comments > /dev/null; then
         log_file="${command}_${sha}_${arg}.txt"
-        echo $comment_id >> $db/comments.txt
+        echo $comment_id >> $db/$comments
         post_status $sha $arg $log_file "pending" "Pending"
         echo "$command $sha $arg"
         start_t=$(date +%s)
