@@ -49,7 +49,16 @@ https://github.com/settings/tokens
 
 This is where the `log-base-url` parameter comes in.
 
-The logs of each test run are named `<commit-sha>_<base>.txt` and placed in the `db` folder. Specifying `http://example.com` as `log-base-url` will record a log file for SHA `abc123` to github as `http://example.com/abc123.txt`, so you should be able to just point your webserver to the `db` directory on your server in order to expose all the logs.
+The logs of each test run are named `<commit-sha>_<base>.txt` and placed in the `db` folder. 
+
+If, for instance, you specify `http://example.com:8000` as `log-base-url`, and a commit with sha `abc123` is processed, the Github pull-request page will show a link to `http://example.com:8000/abc123_master.txt`.
+
+This way, you should be able to just point your webserver to the `db` directory on your server in order to expose all the logs. Eg with the `twistd` webserver (https://twistedmatrix.com/trac/wiki/TwistedWeb): 
+
+```
+$ cd /path/to/pr-builder/db
+$ twistd -n web -p 8000 --path .
+```
 
 ## But ... I want it to do deployment
 
