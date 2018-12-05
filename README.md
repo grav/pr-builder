@@ -47,7 +47,9 @@ https://github.com/settings/tokens
 
 ## Can I see the logs?
 
-The logs of each test run is put into `db/<commit-sha>_<base>.txt`. You can just point your webserver to that directory to expose them to a browser.
+This is where the `log-base-url` parameter comes in.
+
+The logs of each test run are named `<commit-sha>_<base>.txt` and placed in the `db` folder. Specifying `http://example.com` as `log-base-url` will record a log file for SHA `abc123` to github as `http://example.com/abc123.txt`, so you should be able to just point your webserver to the `db` directory on your server in order to expose all the logs.
 
 ## But ... I want it to do deployment
 
