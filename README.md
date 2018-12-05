@@ -40,8 +40,19 @@ Make sure the PR-branch contains a `test.sh` script in the root (or whatever you
 To generate a personal access token, visit this page:
 https://github.com/settings/tokens
 
+## But ... I want it to do deployment
+
+Well, you're in luck. If you set the magic env-var LATEST_COMMIT to something, `pr-builder` will process the lastest commit of the specified branch. So, for example:
+
+```
+$ LATEST_COMMIT=1 ./pr-builder grav abc123beefbeefbeef grav/my-repo master http://example.com/logs my-deploy ./launch-missiles.sh
+```
+
+Again, if you wrap it in a `while` loop, you now have continuous deployment.
+
 ## TODO
 - log all communication with GitHub API
+- ~~describe deployment feature~~
 - describe `comment-command.sh`
 - ~~handle `fatal: reference is not a tree: <sha>` - seems to come up if PR has arrived to GitHub before commit~~
 - specify license
