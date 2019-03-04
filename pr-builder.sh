@@ -32,10 +32,10 @@ mkdir -p $db
 touch $db/$commits
 
 if [ ! -d $workspace ]; then
-    git clone --depth 1 git@github.com:$gh_repo $workspace
+    git clone git@github.com:$gh_repo $workspace
 fi
 
-( cd $workspace && git fetch origin --force -q $git_fetch ) 
+( cd $workspace && git fetch origin --force ) 
 
 shas=`curl -s -u $gh_user:$gh_key "https://api.github.com/$api" | jq -r "$jq"`
 
